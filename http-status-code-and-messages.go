@@ -6,7 +6,11 @@ import (
 	"net/http"
 )
 
-var ErrUnauthorized = errors.New("unauthorized")
+var (
+	ErrUnauthorized = errors.New("unauthorized")
+	ErrInternalServerError = errors.New("internal_server_error")
+)
+
 
 func ThrowStatusOK(i interface{}, c *gin.Context) {
 	if i != nil {
@@ -43,5 +47,12 @@ func ThrowStatusUnauthorized(c *gin.Context) {
 	c.JSON(http.StatusUnauthorized, gin.H{
 		"status":  http.StatusUnauthorized,
 		"error": ErrUnauthorized,
+	})
+}
+
+func ThrowStatusInternalServerError(c *gin.Context) {
+	c.JSON(http.StatusInternalServerError, gin.H{
+		"status":  http.StatusInternalServerError,
+		"error": ErrInternalServerError.Error(),
 	})
 }
