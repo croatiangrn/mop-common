@@ -7,10 +7,15 @@ import (
 )
 
 var (
-	ErrUnauthorized = errors.New("unauthorized")
+	ErrUnauthorized        = errors.New("unauthorized")
 	ErrInternalServerError = errors.New("internal_server_error")
 )
 
+type httpErrorWithErrorSlug struct {
+	HumanizedError string `json:"humanized_error"`
+	ErrorSlug string `json:"error_slug"`
+	Status    int    `json:"status"`
+}
 
 func ThrowStatusOK(i interface{}, c *gin.Context) {
 	if i != nil {
@@ -36,23 +41,47 @@ func ThrowStatusCreated(i interface{}, c *gin.Context) {
 	})
 }
 
-func ThrowStatusBadRequest(err error, c *gin.Context) {
-	c.JSON(http.StatusBadRequest, gin.H{
-		"status":  http.StatusBadRequest,
-		"error": err.Error(),
-	})
+func ThrowStatusBadRequest(err error, c *gin.Context, optionalMessage ...string) {
+	message := "Bad request"
+	if len(optionalMessage) > 0 {
+		message = optionalMessage[0]
+	}
+
+	e := httpErrorWithErrorSlug{
+		HumanizedError: message,
+		ErrorSlug:      err.Error(),
+		Status:         http.StatusBadRequest,
+	}
+
+	c.JSON(http.StatusBadRequest, e)
 }
 
-func ThrowStatusUnauthorized(c *gin.Context) {
-	c.JSON(http.StatusUnauthorized, gin.H{
-		"status":  http.StatusUnauthorized,
-		"error": ErrUnauthorized.Error(),
-	})
+func ThrowStatusUnauthorized(c *gin.Context, optionalMessage ...string) {
+	message := "Unauthorized"
+	if len(optionalMessage) > 0 {
+		message = optionalMessage[0]
+	}
+
+	e := httpErrorWithErrorSlug{
+		HumanizedError: message,
+		ErrorSlug:      ErrUnauthorized.Error(),
+		Status:         http.StatusUnauthorized,
+	}
+
+	c.JSON(http.StatusUnauthorized, e)
 }
 
-func ThrowStatusInternalServerError(c *gin.Context) {
-	c.JSON(http.StatusInternalServerError, gin.H{
-		"status":  http.StatusInternalServerError,
-		"error": ErrInternalServerError.Error(),
-	})
+func ThrowStatusInternalServerError(c *gin.Context, optionalMessage ...string) {
+	message := "Internal server error"
+	if len(optionalMessage) > 0 {
+		message = optionalMessage[0]
+	}
+
+	e := httpErrorWithErrorSlug{
+		HumanizedError: message,
+		ErrorSlug:      ErrInternalServerError.Error(),
+		Status:         http.StatusInternalServerError,
+	}
+
+	c.JSON(http.StatusInternalServerError, e)
 }
