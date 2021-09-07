@@ -46,7 +46,7 @@ func ThrowStatusBadRequest(err error, c *gin.Context) {
 func ThrowStatusUnauthorized(c *gin.Context) {
 	c.JSON(http.StatusUnauthorized, gin.H{
 		"status":  http.StatusUnauthorized,
-		"error": ErrUnauthorized,
+		"error": ErrUnauthorized.Error(),
 	})
 }
 
