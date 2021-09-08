@@ -85,3 +85,19 @@ func ThrowStatusInternalServerError(c *gin.Context, optionalMessage ...string) {
 
 	c.JSON(http.StatusInternalServerError, e)
 }
+
+func ThrowStatusNotFound(c *gin.Context, optionalMessage ...string) {
+	message := "Record not found"
+	if len(optionalMessage) > 0 {
+		message = optionalMessage[0]
+	}
+
+	e := httpErrorWithErrorSlug{
+		HumanizedError: message,
+		ErrorSlug:      ErrInternalServerError.Error(),
+		Status:         http.StatusNotFound,
+	}
+
+	c.JSON(http.StatusNotFound, e)
+}
+
