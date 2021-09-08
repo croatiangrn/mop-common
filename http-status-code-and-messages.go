@@ -9,6 +9,7 @@ import (
 var (
 	ErrUnauthorized        = errors.New("unauthorized")
 	ErrInternalServerError = errors.New("internal_server_error")
+	ErrRecordNotFound = errors.New("record_not_found")
 )
 
 type httpErrorWithErrorSlug struct {
@@ -94,7 +95,7 @@ func ThrowStatusNotFound(c *gin.Context, optionalMessage ...string) {
 
 	e := httpErrorWithErrorSlug{
 		HumanizedError: message,
-		ErrorSlug:      ErrInternalServerError.Error(),
+		ErrorSlug:      ErrRecordNotFound.Error(),
 		Status:         http.StatusNotFound,
 	}
 
